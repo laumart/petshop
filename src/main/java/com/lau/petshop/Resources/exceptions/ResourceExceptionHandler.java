@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.lau.petshop.service.exceptions.ObjetoNaoEncontradoException;
+import com.lau.petshop.service.exceptions.DataIntegrityException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -18,5 +19,12 @@ public class ResourceExceptionHandler {
 		StandardError erro = new StandardError(HttpStatus.NOT_FOUND.value(), e.getMessage()); 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
 
+	}
+	
+	@ExceptionHandler(DataIntegrityException.class)
+	public ResponseEntity<StandardError> objectNotFound(DataIntegrityException e, HttpServletRequest request){
+
+		StandardError erro = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage()); 
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);		
 	}
 }
