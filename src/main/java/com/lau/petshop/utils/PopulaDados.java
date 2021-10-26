@@ -16,18 +16,25 @@ import com.lau.petshop.domain.Endereco;
 import com.lau.petshop.domain.Especie;
 import com.lau.petshop.domain.Estado;
 import com.lau.petshop.domain.Funcionario;
+import com.lau.petshop.domain.PagCartao;
+import com.lau.petshop.domain.PagDinheiro;
+import com.lau.petshop.domain.Pagamento;
 import com.lau.petshop.domain.Pet;
 import com.lau.petshop.domain.Produto;
 import com.lau.petshop.domain.Raca;
+import com.lau.petshop.domain.Servico;
+import com.lau.petshop.domain.enuns.SituacaoPagamento;
 import com.lau.petshop.repository.CategoriaRepository;
-import com.lau.petshop.repository.EspecieRepository;
 import com.lau.petshop.repository.CidadeRepository;
 import com.lau.petshop.repository.EnderecoRepository;
+import com.lau.petshop.repository.EspecieRepository;
 import com.lau.petshop.repository.EstadoRepository;
+import com.lau.petshop.repository.PagamentoRepository;
 import com.lau.petshop.repository.PessoaRepository;
 import com.lau.petshop.repository.PetRepository;
 import com.lau.petshop.repository.ProdutoRepository;
 import com.lau.petshop.repository.RacaRepository;
+import com.lau.petshop.repository.ServicoRepository;
 
 @Component
 public class PopulaDados {
@@ -58,6 +65,12 @@ public class PopulaDados {
 
 	@Autowired
 	EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	ServicoRepository servicoRepository;
+
+	@Autowired
+	PagamentoRepository pagamentoRepository;
 	
 	@PostConstruct
 	public void cadastrar() throws ParseException {
@@ -125,5 +138,22 @@ public class PopulaDados {
 
 		pessoaRepository.saveAll(Arrays.asList(clt1, fnc1));
 		enderecoRepository.saveAll(Arrays.asList(end1, end2, end3));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+		Servico srv1 = new Servico(null, sdf.parse("02/09/2021 09:00"), sdf.parse("02/09/2021 12:00"), "Tosa", clt1, fnc1);
+		Servico srv2 = new Servico(null, sdf.parse("03/09/2021 12:00"), sdf.parse("04/09/2021 12:00"), "Hotel", clt1, fnc1);
+
+		Pagamento pgt1 = new PagCartao(null, 60.00, SituacaoPagamento.QUITADO,srv2, 6);
+		srv2.setPagamento(pgt1);
+
+		Pagamento pgt2 = new PagDinheiro(null, 100.00, SituacaoPagamento.PENDENTE, srv1, sdf.parse("02/09/2021 00:00"), null);
+		srv1.setPagamento(pgt2);
+
+		clt1.getServicos().addAll(Arrays.asList(srv1, srv2));
+		fnc1.getServicos().addAll(Arrays.asList(srv1, srv2));
+
+		servicoRepository.saveAll(Arrays.asList(srv1, srv2));
+		pagamentoRepository.saveAll(Arrays.asList(pgt1, pgt2));
 	}
 }
