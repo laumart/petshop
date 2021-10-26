@@ -1,4 +1,4 @@
-package com.lau.petshop.Resources;
+package com.lau.petshop.resources;
 
 import java.util.ArrayList;
 import java.util.List;
