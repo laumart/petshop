@@ -11,15 +11,20 @@ import org.springframework.stereotype.Component;
 
 import com.lau.petshop.domain.Categoria;
 import com.lau.petshop.domain.Cidade;
+import com.lau.petshop.domain.Cliente;
+import com.lau.petshop.domain.Endereco;
 import com.lau.petshop.domain.Especie;
 import com.lau.petshop.domain.Estado;
+import com.lau.petshop.domain.Funcionario;
 import com.lau.petshop.domain.Pet;
 import com.lau.petshop.domain.Produto;
 import com.lau.petshop.domain.Raca;
 import com.lau.petshop.repository.CategoriaRepository;
 import com.lau.petshop.repository.EspecieRepository;
 import com.lau.petshop.repository.CidadeRepository;
+import com.lau.petshop.repository.EnderecoRepository;
 import com.lau.petshop.repository.EstadoRepository;
+import com.lau.petshop.repository.PessoaRepository;
 import com.lau.petshop.repository.PetRepository;
 import com.lau.petshop.repository.ProdutoRepository;
 import com.lau.petshop.repository.RacaRepository;
@@ -47,6 +52,12 @@ public class PopulaDados {
 
 	@Autowired
 	CidadeRepository cidadeRepository;
+	
+	@Autowired
+	PessoaRepository pessoaRepository;
+
+	@Autowired
+	EnderecoRepository enderecoRepository;
 	
 	@PostConstruct
 	public void cadastrar() throws ParseException {
@@ -99,6 +110,20 @@ public class PopulaDados {
 		est2.getCidades().addAll(Arrays.asList(c3));
 
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
-		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));		
+		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));	
+		
+		Cliente clt1 = new Cliente(null, "Jose Maria", "jose@mail.com", "335.194.320-21", "FISICA");
+		clt1.getTelefones().addAll(Arrays.asList("3516-2000","9191-0000"));
+
+		Funcionario fnc1 = new Funcionario(null, "Maria Jose", "maria@mail.com", "551.872.200.12", "ATENDENTE");
+		fnc1.getTelefones().addAll(Arrays.asList("3279-0001","9090-0002"));
+
+
+		Endereco end1 = new Endereco(null, "Rua Tupis", "500", "Apto 101", "Pindorama", "30111222", clt1, c1);
+		Endereco end2 = new Endereco(null, "Av. Tamoios", "100", "Casa", "Oca", "3968000", fnc1, c2);
+		Endereco end3 = new Endereco(null, "Rua Aranãs", "10", "Apto 201", "Centro", "01153000", fnc1, c3);
+
+		pessoaRepository.saveAll(Arrays.asList(clt1, fnc1));
+		enderecoRepository.saveAll(Arrays.asList(end1, end2, end3));
 	}
 }
